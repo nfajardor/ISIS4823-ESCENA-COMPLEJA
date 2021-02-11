@@ -14,7 +14,7 @@ public class Script : MonoBehaviour
     Quaternion ejeyM;
     Quaternion ejeym;
 
-    float timecount;
+    GameObject gyro;
 
 
     GameObject magoA;
@@ -90,7 +90,13 @@ public class Script : MonoBehaviour
        magoY.transform.Rotate(0,315,0);
        magoY.transform.parent = altarY.transform;
        magoY.transform.position += MxMz + new Vector3(0,2,0);
+       gyro = VerticesPlaneta(origen,0.05f, 4, 8,gris);
        
+       altarA.transform.parent = gyro.transform;
+       altarR.transform.parent = gyro.transform;
+       altarV.transform.parent = gyro.transform;
+       altarY.transform.parent = gyro.transform;
+
 
     }
     void Update(){
@@ -105,6 +111,8 @@ public class Script : MonoBehaviour
         magoV.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
         magoY.transform.GetChild(0).GetChild(0).transform.Rotate(45f*Time.deltaTime,0,18f*Time.deltaTime);
         magoY.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
+
+        gyro.transform.Rotate(0,-50*Time.deltaTime,0);
         
     }
     GameObject crearParedes(Vector3 origen,float lado, Color color){

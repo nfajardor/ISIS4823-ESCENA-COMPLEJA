@@ -5,10 +5,24 @@ using UnityEngine;
 public class Script : MonoBehaviour
 {
 
-    
-    // Start is called before the first frame update
-    void Start()
-    {
+    GameObject planet;
+
+    Quaternion ejexM;
+    Quaternion ejexm;
+    Quaternion ejezM;
+    Quaternion ejezm;
+    Quaternion ejeyM;
+    Quaternion ejeym;
+
+    float timecount;
+
+
+    GameObject magoA;
+    GameObject magoR;
+    GameObject magoV;
+    GameObject magoY;    
+    // Start; is called before the first frame update
+    void Start() {
        //Colores a usar
        Color moradoOscuro = RGBToPercent(new Vector3(130,9,217));
        Color gris = RGBToPercent(new Vector3(93,92,97));
@@ -21,12 +35,12 @@ public class Script : MonoBehaviour
        Color cafe = RGBToPercent(new Vector3(100,0,0));
        
        //Rotaciones
-       Quaternion ejexM = Quaternion.Euler(90f,0f,0f);
-       Quaternion ejexm = Quaternion.Euler(-90f,0f,0f);
-       Quaternion ejezM = Quaternion.Euler(0f,0f,90f);
-       Quaternion ejezm = Quaternion.Euler(0f,0f,-90f);
-       Quaternion ejeyM = Quaternion.Euler(0f,90f,0f);
-       Quaternion ejeym = Quaternion.Euler(0f,-90f,0f);
+       ejexM = Quaternion.Euler(90f,0f,0f);
+       ejexm = Quaternion.Euler(-90f,0f,0f);
+       ejezM = Quaternion.Euler(0f,0f,90f);
+       ejezm = Quaternion.Euler(0f,0f,-90f);
+       ejeyM = Quaternion.Euler(0f,90f,0f);
+       ejeym = Quaternion.Euler(0f,-90f,0f);
 
        //Vectores utiles
        Vector3 origen = new Vector3(0,0,0);
@@ -38,31 +52,61 @@ public class Script : MonoBehaviour
        //Dibujo del Entorno
        GameObject cuarto = crearParedes(origen,60, gris);
 
-
-       //Dibujo de los tapetes
-       
-
-
-       //Dibujo del altar
-       VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, moradoOscuro, negro, 8, 0);
-       VerticesAltar(mxmz, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, azul, negro, 5, 1);
-       VerticesAltar(mxMz, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, rojo, negro, 5, 2);
-       VerticesAltar(Mxmz, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, verde, negro, 5, 3);
-       VerticesAltar(MxMz, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, amarillo, negro, 5, 4); 
-       
-
-       
        //Dibujo del Planeta
-       VerticesPlaneta(new Vector3(0,6,0), 2.5f, 90, 180, moradoOscuro);
+       planet = VerticesPlaneta(origen, 2.5f, 90, 180, moradoOscuro);
        GameObject anillo1 = verticesAnillos(origen, 2.75f, 5f, negro, 180);
        GameObject anillo2 = verticesAnillos(origen, 2.75f, 5f, negro, 180);
-
+       anillo1.transform.parent = planet.transform;
+       anillo2.transform.parent = planet.transform;
        anillo1.transform.rotation = Quaternion.Slerp(anillo1.transform.rotation,ejezM,0.3f);
        anillo2.transform.rotation = Quaternion.Slerp(anillo2.transform.rotation,ejezm,0.3f);
-       anillo1.transform.position += new Vector3(0,6,0);
-       anillo2.transform.position += new Vector3(0,6,0);
-    }
+       planet.transform.position += new Vector3(0,6,0);
 
+       //Dibujo del altar
+       GameObject altarM = VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, moradoOscuro, negro, 8, 0);
+       altarM.transform.parent = planet.transform;
+       GameObject altarA = VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, azul, negro, 5, 1);
+       altarA.transform.position += mxmz;
+       GameObject altarR = VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, rojo, negro, 5, 2);
+       altarR.transform.position += mxMz;
+       GameObject altarV = VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, verde, negro, 5, 3);
+       altarV.transform.position +=Mxmz;
+       GameObject altarY = VerticesAltar(origen, 1f, 1.5f, 2.25f, 3f, 1, 1, 128, grisClaro, amarillo, negro, 5, 4); 
+       altarY.transform.position += MxMz;
+
+       magoA = crearMago(origen, (1.5f+2.25f)/2, 4, azul, 64);
+       magoA.transform.Rotate(0,135,0);
+       magoA.transform.parent = altarA.transform;
+       magoA.transform.position += mxmz + new Vector3(0,2,0);
+       magoR = crearMago(origen, (1.5f+2.25f)/2, 4,rojo, 64);
+       magoR.transform.Rotate(0,225,0);
+       magoR.transform.parent = altarR.transform;
+       magoR.transform.position += mxMz + new Vector3(0,2,0);
+       magoV = crearMago(origen, (1.5f+2.25f)/2, 4,verde, 64);
+       magoV.transform.Rotate(0,45,0);
+       magoV.transform.parent = altarV.transform;
+       magoV.transform.position += Mxmz + new Vector3(0,2,0);
+       magoY = crearMago(origen, (1.5f+2.25f)/2, 4,amarillo, 64);
+       magoY.transform.Rotate(0,315,0);
+       magoY.transform.parent = altarY.transform;
+       magoY.transform.position += MxMz + new Vector3(0,2,0);
+       
+
+    }
+    void Update(){
+        planet.transform.Rotate (0,50*Time.deltaTime,0);
+        planet.transform.GetChild(0).Rotate(60*Time.deltaTime,5*Time.deltaTime,55*Time.deltaTime);
+        planet.transform.GetChild(1).Rotate(-30*Time.deltaTime,-18*Time.deltaTime,70*Time.deltaTime);
+        magoA.transform.GetChild(0).GetChild(0).transform.Rotate(45f*Time.deltaTime,0,18f*Time.deltaTime);
+        magoA.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
+        magoR.transform.GetChild(0).GetChild(0).transform.Rotate(45f*Time.deltaTime,0,18f*Time.deltaTime);
+        magoR.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
+        magoV.transform.GetChild(0).GetChild(0).transform.Rotate(45f*Time.deltaTime,0,18f*Time.deltaTime);
+        magoV.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
+        magoY.transform.GetChild(0).GetChild(0).transform.Rotate(45f*Time.deltaTime,0,18f*Time.deltaTime);
+        magoY.transform.GetChild(0).GetChild(1).transform.Rotate(-45f*Time.deltaTime,0,-30f*Time.deltaTime);
+        
+    }
     GameObject crearParedes(Vector3 origen,float lado, Color color){
         Vector3[] vert = new Vector3[8];
         float coord = (float) lado/2f;
@@ -78,7 +122,6 @@ public class Script : MonoBehaviour
         int[] tri = new int[] {0,1,3,1,2,3,1,5,6,1,6,2,2,6,7,2,7,3,3,7,4,3,4,0,0,4,5,0,5,1,5,7,6,4,7,5};
         return dibujarMesh(vert, tri, color);
     }
-
     GameObject verticesCilindro(Vector3 origen, int n, float r, float h, Color color){
         Vector3[] vert = new Vector3[2+2*n];
         vert[0] = PolarToCartesian(new Vector3(0, 0, h), origen);
@@ -94,7 +137,6 @@ public class Script : MonoBehaviour
         }
         return triCilindro(vert,n,color);
     }
-
     GameObject triCilindro(Vector3[] vert, int n, Color color){
         int[] tri = new int[12*n];
 
@@ -177,7 +219,6 @@ public class Script : MonoBehaviour
         //vertices = vert;
         return triAnillos(vert,color,n);
     }
-    
     GameObject triAnillos(Vector3[] vert, Color color, int n){
         int[] tri = new int[12*n];
         int inf = n;
@@ -227,7 +268,6 @@ public class Script : MonoBehaviour
     }
     GameObject VerticesPlaneta(Vector3 origen, float r, int np, int nt, Color color){
         Vector3[] vert = new Vector3[2+nt*(np-1)];
-        
         vert[0] = SphericalToCartesian(new Vector3(r,0,0), origen);
         vert[1] = SphericalToCartesian(new Vector3(r,0,(float)System.Math.PI), origen);
         float dp = (float)((System.Math.PI)/np);
@@ -240,16 +280,9 @@ public class Script : MonoBehaviour
                 vert[c] = SphericalToCartesian(new Vector3(r,theta,phi), origen);
                 c++;
             }
-        }
-        //
-        
+        } 
        return triPlaneta(vert,np, nt, color);
-       //return null;
     }
-
-    
-
-
     GameObject triPlaneta(Vector3[] vert, int np, int nt, Color color) {
         int[] tri = new int[6*nt*(np-1)];
 
@@ -342,14 +375,10 @@ public class Script : MonoBehaviour
         z += orgn.z;
         return new Vector3(x,y,z);
     }
-
     Color RGBToPercent(Vector3 colores){
         Vector3 p = new Vector3((float)(colores.x/255),(float)(colores.y/255),(float)(colores.z/255));
         return new Color(p.x,p.y,p.z);
     }
-
-    
-
     /*
      * Convierte el vector 3 de coordenadas polares en un Vector3 de coordenadas cartesianas y mueve las coordenadas al nuevo origen
      */
@@ -359,7 +388,6 @@ public class Script : MonoBehaviour
         float y = (float)(polar.z);
         return new Vector3(x +origen.x,y + origen.y,z + origen.z);
     }
-
     /*
      * Cuadra los vertices de un tapete en el piso de la escena, en el centro, y los guarda en un arreglo de Vector3 llamado vert. Tambien pasa el color
      */
@@ -371,7 +399,6 @@ public class Script : MonoBehaviour
         vert[3] = (new Vector3(lado/2,elevacion,lado/2)) + origen;
         return triangulosTapete(vert, color);
     }
-
     /*
      * Crea los vertices de un Segundo Tapete más grande que el anterior
      */
@@ -382,8 +409,7 @@ public class Script : MonoBehaviour
         vert[2] = (new Vector3(0,elevacion,lado)) + origen;
         vert[3] = (new Vector3(lado,elevacion,0)) + origen;
         return triangulosTapete(vert, color);
-    }
-    
+    } 
     /*
      * Crea los vertices de un tapete circular
      */
@@ -396,8 +422,6 @@ public class Script : MonoBehaviour
         }
         return triTapeteCircular(vert, color);
     }
-
-
     /*
      * Crea los triangulos del tapete circular
      */
@@ -425,7 +449,6 @@ public class Script : MonoBehaviour
         }
         return dibujarMesh(vert, tri, color);
     }
-
     /*
      * Toma los vertices del tapete y guarda en un arreglo de enteros, tri, los triangulos para formar el tapete. Tambien pasa el color
      */
@@ -439,7 +462,6 @@ public class Script : MonoBehaviour
         tri[5] = 3;
         return dibujarMesh(vert, tri, color);
     }
-
     /*
      * Dibuja el mesh del objeto
      */
@@ -454,12 +476,10 @@ public class Script : MonoBehaviour
         mesh.RecalculateNormals();
         return obj;
     }
-
-
     /*
      * Procedimiento de creación de unn mago
      */
-    void crearMago(Vector3 origen, float r, float h, Color color, int n, int id){
+    GameObject crearMago(Vector3 origen, float r, float h, Color color, int n){
         Vector3[] vert = new Vector3[2+2*n];
         vert[0] = PolarToCartesian(new Vector3(0, 0, h), origen);
         vert[1] = PolarToCartesian(new Vector3(0, 0, 0), origen);
@@ -472,28 +492,42 @@ public class Script : MonoBehaviour
             float theta = i*delta;
             vert[i] = PolarToCartesian(new Vector3(r, theta, 0), origen);
         }
+        GameObject cuerpoMago = triPlaneta(vert,2,n, color);
+        GameObject ataque = VerticesPlaneta(origen,r, n, n, color);
+        GameObject anilloA = verticesAnillos(origen, r, 1.25f*r, color, n);
+        anilloA.transform.Rotate(30,0,0);
+        GameObject anilloB = verticesAnillos(origen, r, 1.25f*r, color, n);
+        anilloB.transform.Rotate(-30,0,0);
+        anilloA.transform.parent = ataque.transform;
+        anilloB.transform.parent = ataque.transform;
+        ataque.transform.parent = cuerpoMago.transform;
+        ataque.transform.position += new Vector3(-h*1.75f,h*0.9f,0);
 
-        GameObject bd = verticesCilindro((new Vector3(0,0,0)),n,r/5,h, color);
-        GameObject bi = verticesCilindro((new Vector3(0,0,0)),n,r/5,h, color);
-        Vector3 dir = (new Vector3(0,0,0))-origen;
-        Quaternion objetivo = darOrientacion(id);
-        Quaternion act = Quaternion.Euler(0,90f,0);
-        bd.transform.rotation = Quaternion.Slerp(act, objetivo,90f);
-        bi.transform.rotation = Quaternion.Slerp(act, objetivo,90f);
-        dir-= new Vector3(0,.9f*h,0);
-        bd.transform.position -= dir;
-        bi.transform.position -= dir;
-        Vector3 mov = magnitudVector(new Vector3(dir.z,0,-dir.x), 1.2f*r);
-        bi.transform.position +=mov;
-        bd.transform.position -= mov;
-        GameObject hom1 = VerticesPlaneta(origen+mov+new Vector3(0,.9f*h,0),r/5,n,n,color);
-        GameObject hom2 = VerticesPlaneta(origen-mov+new Vector3(0,.9f*h,0),r/5,n,n,color);
-        GameObject cab = VerticesPlaneta(origen + new Vector3(0,1.5f*h,0),r,n,n,Color.white);
-        GameObject aureola = verticesAnillos(origen+ new Vector3(0,2f*h,0), r, 1.25f*r, color, n);
-        GameObject ataque = VerticesPlaneta(origen+magnitudVector(dir,2f*h)+ new Vector3(0,h*1.25f,0),r, n, n, color);
-        triPlaneta(vert,2,n, color);
+        GameObject cabezaMago = VerticesPlaneta(origen, r, n, n, Color.white);
+        cabezaMago.transform.parent = cuerpoMago.transform;
+        cabezaMago.transform.position += new Vector3(0,h + 1.1f*r,0);
+
+        GameObject bd = verticesCilindro(origen,n,r/5,h, color);
+        GameObject bi = verticesCilindro(origen,n,r/5,h, color);
+        bd.transform.parent  = cuerpoMago.transform;
+        bi.transform.parent  = cuerpoMago.transform;
+        bd.transform.Rotate(0,0,90);
+        bi.transform.Rotate(0,0,90);
+        bd.transform.position += new Vector3(0,0.9f*h,-1.1f*r);
+        bi.transform.position += new Vector3(0,0.9f*h,1.1f*r);
+        GameObject hom1 = VerticesPlaneta(origen,r/5f,n,n,color);
+        GameObject hom2 = VerticesPlaneta(origen,r/5f,n,n,color);
+        hom1.transform.parent = cuerpoMago.transform;
+        hom2.transform.parent = cuerpoMago.transform;
+        hom1.transform.position +=new Vector3(0,0.9f*h,-1.1f*r);
+        hom2.transform.position +=new Vector3(0,0.9f*h,1.1f*r);
+        GameObject aureola = verticesAnillos(origen, r, 1.25f*r, color, n);
+        aureola.transform.parent = cuerpoMago.transform;
+        aureola.transform.Rotate(0,0,-30);
+        aureola.transform.position += new Vector3(r/2f, 2.25f*h,0);
+        return cuerpoMago;
+
     }
-
     /*
      * Método que dado un vector u, retorna un vector en su misma dirección pero con magnitud n
      */ 
@@ -501,7 +535,6 @@ public class Script : MonoBehaviour
         float m = (float) System.Math.Sqrt(u.x*u.x+u.y*u.y+u.z*u.z);
         return new Vector3(n*u.x/m,n*u.y/m,n*u.z/m);
     }
-
     /*
      * Retorna la orientación de giro para los brazos de los magos
      */
@@ -518,11 +551,10 @@ public class Script : MonoBehaviour
         }
         return respuesta;
     }
-
     /*
      * Crea las velas de los altares
      */
-    void crearVelas(Vector3 origen, float rp, float rv, float h, float elevacion, Color llama, int n, int cantidad){
+    void crearVelas(Vector3 origen, float rp, float rv, float h, float elevacion, Color llama, int n, int cantidad, GameObject altar){
         Color cera = RGBToPercent(new Vector3(228,235,241));
         float delta = (float)(2*System.Math.PI/cantidad);
         float rv2 = rv/5;
@@ -530,15 +562,16 @@ public class Script : MonoBehaviour
         for(int i = 0;i<cantidad;i++){
 
             Vector3 posActual = PolarToCartesian(new Vector3(rp,delta*i,elevacion), origen);
-            verticesCilindro(posActual,n, rv, h, cera);
+            GameObject cuerpoVela = verticesCilindro(posActual,n, rv, h, cera);
 
-            verticesCilindro((posActual+=new Vector3(0,h,0)),n,rv2,h2,new Color(0,0,0));
-            VerticesPlaneta((posActual+=new Vector3(0,h2,0)), (rv+rv2)/2, n, n, llama);
+            GameObject mechaVela = verticesCilindro((posActual+=new Vector3(0,h,0)),n,rv2,h2,new Color(0,0,0));
+            GameObject llamaVela = VerticesPlaneta((posActual+=new Vector3(0,h2,0)), (rv+rv2)/2, n, n, llama);
 
+            cuerpoVela.transform.parent = altar.transform;
+            mechaVela.transform.parent = altar.transform;
+            llamaVela.transform.parent = altar.transform;
         }
     }
-
-
     /*
      * Cuadra los vertices del altar
      */
@@ -569,31 +602,36 @@ public class Script : MonoBehaviour
             vert[i] = PolarToCartesian(new Vector3(r4,i*delta,0), origen);
         }
 
-
-       verticesTapeteCircular(origen, r3, n, colorSecundario,1.002f);
-       verticesTapeteCircular(origen, (r3+r2)/2, n, colorPrincipal,1.004f);
-       verticesTapeteCircular(origen, r1, n, colorSecundario, 2.002f);
-       verticesTapeteCircular(origen, r1*0.9f, n, colorPrincipal,2.004f);
-       verticesTapeteCircular(origen, r1*0.5f, n, colorSecundario, 2.006f);
+       GameObject altar = triAltar(vert, color, n);
+       GameObject tapete1 = verticesTapeteCircular(origen, r3, n, colorSecundario,1.002f);
+       GameObject tapete2 = verticesTapeteCircular(origen, (r3+r2)/2, n, colorPrincipal,1.004f);
+       GameObject tapete3 = verticesTapeteCircular(origen, r1, n, colorSecundario, 2.002f);
+       GameObject tapete4 = verticesTapeteCircular(origen, r1*0.9f, n, colorPrincipal,2.004f);
+       GameObject tapete5 = verticesTapeteCircular(origen, r1*0.5f, n, colorSecundario, 2.006f);
 
        //Tapetes del piso
-       verticesTapete(origen, 6, colorPrincipal, 0.016f);
-       verticesTapete2(origen, 6, colorSecundario, 0.012f);
-       verticesTapeteCircular(origen, 6, n, colorPrincipal, 0.008f);
-       verticesTapeteCircular(origen, 6.5f, n, colorSecundario, 0.004f);
-       
+       GameObject tapete6 = verticesTapete(origen, 6, colorPrincipal, 0.016f);
+       GameObject tapete7 = verticesTapete2(origen, 6, colorSecundario, 0.012f);
+       GameObject tapete8 = verticesTapeteCircular(origen, 6, n, colorPrincipal, 0.008f);
+       GameObject tapete9 = verticesTapeteCircular(origen, 6.5f, n, colorSecundario, 0.004f);
+       tapete1.transform.parent = altar.transform;
+       tapete2.transform.parent = altar.transform;
+       tapete3.transform.parent = altar.transform;
+       tapete4.transform.parent = altar.transform;
+       tapete5.transform.parent = altar.transform;
+       tapete6.transform.parent = altar.transform;
+       tapete7.transform.parent = altar.transform;
+       tapete8.transform.parent = altar.transform;
+       tapete9.transform.parent = altar.transform;
        float rp = (r2+r3)/2;
        float rv = 0.25f*(r3-r2);
        float h = h1*0.9f;
-       if(id != 0){
-         crearVelas(origen,rp,rv,h,h2,colorPrincipal,n,velas);
-         crearMago((origen += new Vector3(0,h1+h2,0)), (r2+r3)/2, 2*(h1+h2),colorPrincipal, n, id);
-       }
 
-       return triAltar(vert, color, n);
+       crearVelas(origen,rp,rv,h,h2,colorPrincipal,n,velas, altar);
+
+
+       return altar;
     }
-
-
     /*
      * Dibuja los Triángulos de un altar.
      */
